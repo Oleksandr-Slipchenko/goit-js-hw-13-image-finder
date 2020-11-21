@@ -9,9 +9,6 @@ export default class ImagesApiServer {
   fetchGallery() {
     return fetch(`${BASE_URL}/?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=12&key=${KEY}`)
       .then(res => { return res.json() })
-      // .then((data) => {
-      //   console.log(this);
-      // })
   }
   incrementPage() {
     this.page += 1;
