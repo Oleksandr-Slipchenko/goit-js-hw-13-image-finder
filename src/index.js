@@ -5,6 +5,9 @@ import renderImagesGallery from './js/renderImagesGallery';
 import ImagesApiServer from './js/apiService';
 // import LoadMoreBtn from './js/loadMoreBtn';
 import debounce from 'lodash.debounce';
+import * as basicLightbox from 'basiclightbox';
+import 'basiclightbox/dist/basicLightbox.min.css';
+
 
 renderForm();
 const refs = getRefs();
@@ -18,6 +21,7 @@ const imagesApiServer = new ImagesApiServer();
 // loadMoreBtn.refs.button.addEventListener('click', onLoadMore);
 document.addEventListener('scroll', handleScroll);
 refs.input.addEventListener('input', debounce(onSearchImages, 500));
+refs.gallery.addEventListener('click', onGalleryElClick);
 
 let isLoading = false;
 
@@ -28,20 +32,6 @@ function handleScroll(e) {
     onLoadMore();
   }
 }
-
-// function onSearchImages(e) {
-//   e.preventDefault();
-//   imagesApiServer.query = e.target.value.trim();
-
-//   refs.gallery.innerHTML = '';
-//   if (!imagesApiServer.query) return;
-
-//   // loadMoreBtn.show();
-//   imagesApiServer.resetPage();
-//   imagesApiServer.fetchGallery( (data) => console.log(data))
-//   .then(renderImagesGallery)
-//   .catch(error => console.log(error));
-// }
 
 async function onSearchImages(e) {
   e.preventDefault();
@@ -60,19 +50,15 @@ async function onSearchImages(e) {
   };
 }
 
-// function onLoadMore(e) {
-//   if (isLoading) {
-//     return;
-//   }
-//   isLoading = true;
-//   if (!imagesApiServer.query) return;
 
-//   imagesApiServer.incrementPage();
-//   imagesApiServer.fetchGallery()
-//     .then(renderImagesGallery)
-//     .then(() => isLoading = false)
-//   .catch(error => console.log(error));
-// }
+
+//
+
+
+
+//
+
+
 async function onLoadMore(e) {
   if (isLoading) {
   return;
@@ -84,8 +70,37 @@ async function onLoadMore(e) {
   const increment = await imagesApiServer.incrementPage();
   const addImages = await imagesApiServer.fetchGallery()
     .then(renderImagesGallery)
+    // .then(scrollPage)
     .then(() => isLoading = false)
 } catch (error) {
   console.log(error)
   };
 }
+
+function onGalleryElClick(event) {
+  if (event.target.nodeName !== 'IMG') {
+    return;
+  }
+  const changeModalImage = `<img src='${event.target.dataset.source}' alt="icon" />`;
+  const instance = basicLightbox.create(changeModalImage);
+  instance.show();
+}
+
+
+// Функция автоматического скрола //
+
+// function scrollPage() {
+//   try {
+//     setTimeout(() => {
+//       window.scrollTo({
+//         top: document.body.scrollHeight,
+//         left: 0,
+//         behavior: 'smooth',
+//       });
+//     }, 1000);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+

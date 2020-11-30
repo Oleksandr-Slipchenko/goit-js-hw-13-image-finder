@@ -5,14 +5,16 @@ export default class ImagesApiServer {
   constructor() {
     this.searchQuery;
     this.page = 1;
+    this.renderedImg = 0;
   }
   // fetchGallery() {
   //   return fetch(`${BASE_URL}/?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=3&key=${KEY}`)
   //     .then(res => { return res.json() })
   // }
   async fetchGallery() {
-    const response = await fetch(`${BASE_URL}/?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=3&key=${KEY}`);
+    const response = await fetch(`${BASE_URL}/?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=12&key=${KEY}`);
     const images = await response.json();
+    console.log(images);
     return images;
   }
 
