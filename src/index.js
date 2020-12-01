@@ -100,7 +100,7 @@ function onGalleryElClick(event) {
 //   try {
 //   const increment = await imagesApiServer.incrementPage();
 //   const addImages = await imagesApiServer.fetchGallery()
-//     .then(renderImagesGallery)
+//     .then(checkRender)
 //     // .then(scrollPage)
 //     .then(() => isLoading = false)
 // } catch (error) {
