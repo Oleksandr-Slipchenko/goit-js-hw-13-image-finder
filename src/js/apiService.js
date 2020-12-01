@@ -14,7 +14,7 @@ export default class ImagesApiServer {
   async fetchGallery() {
     const response = await fetch(`${BASE_URL}/?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=12&key=${KEY}`);
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data;
   }
 
