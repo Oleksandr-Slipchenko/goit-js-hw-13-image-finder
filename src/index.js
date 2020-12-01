@@ -12,26 +12,21 @@ import 'basiclightbox/dist/basicLightbox.min.css';
 renderForm();
 const refs = getRefs();
 
-// const loadMoreBtn = new LoadMoreBtn({
-//   selector: '[data-action="load-more"]',
-//   hidden: true,
-// });
 const imagesApiServer = new ImagesApiServer();
 
 // loadMoreBtn.refs.button.addEventListener('click', onLoadMore);
-document.addEventListener('scroll', handleScroll);
+// document.addEventListener('scroll', handleScroll);
 refs.input.addEventListener('input', debounce(onSearchImages, 500));
 refs.gallery.addEventListener('click', onGalleryElClick);
 
-let isLoading = false;
+// Данные для метода observer
 
-function handleScroll(e) {
-  const st = window.pageYOffset + window.innerHeight;
-
-  if (window.scrollY + window.innerHeight + 400 > document.documentElement.scrollHeight) {
-    onLoadMore();
-  }
+const options = {
+    rootMargin: '100px'
 }
+const observer = new IntersectionObserver (onEntry, options);
+
+// Функция поиска каринок
 
 async function onSearchImages(e) {
   e.preventDefault();
@@ -43,38 +38,38 @@ async function onSearchImages(e) {
   // loadMoreBtn.show();
   try {
   const reset = await imagesApiServer.resetPage();
-  const addImages = await imagesApiServer.fetchGallery((data) => console.log(data))
-  .then(renderImagesGallery)
+  const addImages = await imagesApiServer.fetchGallery()
+  .then(checkRender)
   } catch (error) {
   console.log(error)
   };
 }
 
+function checkRender(e) {
+  if (imagesApiServer.img < e.totalHits) {
+    // console.log(e);
+    observer.observe(refs.sentinel);
+    renderImagesGallery(e.hits);
+    imagesApiServer.img += 12;
+    }
+  if (imagesApiServer.img === e.totalHits) {
+    observer.unobserve(refs.sentinel);
+      return;
+    }
+  if (imagesApiServer.img + 12 > e.totalHits) {
+    observer.unobserve(refs.sentinel);
+    }
+}
 
+// скрол сторінки
 
-//
-
-
-
-//
-
-
-async function onLoadMore(e) {
-  if (isLoading) {
-  return;
-  }
-  isLoading = true;
-  if (!imagesApiServer.query) return;
-
-  try {
-  const increment = await imagesApiServer.incrementPage();
-  const addImages = await imagesApiServer.fetchGallery()
-    .then(renderImagesGallery)
-    // .then(scrollPage)
-    .then(() => isLoading = false)
-} catch (error) {
-  console.log(error)
-  };
+function onEntry (entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && imagesApiServer.query !== '') {
+            console.log("LOADING...");
+            imagesApiServer.fetchGallery().then(checkRender);
+        }
+    });
 }
 
 function onGalleryElClick(event) {
@@ -86,8 +81,46 @@ function onGalleryElClick(event) {
   instance.show();
 }
 
+      // Настройки кнопки "Показать ещё" при её использовании
 
-// Функция автоматического скрола //
+// const loadMoreBtn = new LoadMoreBtn({
+//   selector: '[data-action="load-more"]',
+//   hidden: true,
+// });
+
+        // Функция добавления новых картинок на странице
+
+// async function onLoadMore(e) {
+//   if (isLoading) {
+//   return;
+//   }
+//   isLoading = true;
+//   if (!imagesApiServer.query) return;
+
+//   try {
+//   const increment = await imagesApiServer.incrementPage();
+//   const addImages = await imagesApiServer.fetchGallery()
+//     .then(renderImagesGallery)
+//     // .then(scrollPage)
+//     .then(() => isLoading = false)
+// } catch (error) {
+//   console.log(error)
+//   };
+// }
+
+              // Бесконечный скрол //
+
+// let isLoading = false;
+
+// function handleScroll(e) {
+//   const st = window.pageYOffset + window.innerHeight;
+
+//   if (window.scrollY + window.innerHeight + 400 > document.documentElement.scrollHeight) {
+//     onLoadMore();
+//   }
+// }
+
+           // Функция автоматического скрола //
 
 // function scrollPage() {
 //   try {
