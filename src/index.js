@@ -61,13 +61,14 @@ function checkRender(e) {
     }
 }
 
-// скрол сторінки
+// Бесконечный скрол - 2
 
 function onEntry (entries) {
     entries.forEach(entry => {
         if (entry.isIntersecting && imagesApiServer.query !== '') {
-            console.log("LOADING...");
-            imagesApiServer.fetchGallery().then(checkRender);
+          console.log("LOADING...");
+          imagesApiServer.incrementPage();
+          imagesApiServer.fetchGallery().then(checkRender);
         }
     });
 }
@@ -108,7 +109,7 @@ function onGalleryElClick(event) {
 //   };
 // }
 
-              // Бесконечный скрол //
+              // Бесконечный скрол - 1 //
 
 // let isLoading = false;
 
