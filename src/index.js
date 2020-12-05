@@ -47,23 +47,21 @@ async function onSearchImages(e) {
 
 function checkRender(e) {
   if (imagesApiServer.img < e.totalHits) {
-    // console.log(e);
     observer.observe(refs.sentinel);
     renderImagesGallery(e.hits);
-    imagesApiServer.img += 12;
-    }
+    imagesApiServer.img += e.hits.length;
+  }
+
   if (imagesApiServer.img === e.totalHits) {
     observer.unobserve(refs.sentinel);
       return;
-    }
-  if (imagesApiServer.img + 12 > e.totalHits) {
-    observer.unobserve(refs.sentinel);
     }
 }
 
 // Бесконечный скрол - 2
 
-function onEntry (entries) {
+function onEntry(entries) {
+  console.log('dsadsa', entries);
     entries.forEach(entry => {
         if (entry.isIntersecting && imagesApiServer.query !== '') {
           console.log("LOADING...");
